@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vol OVPN Panel</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='url(%23g)'/%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%231a6b3c'/%3E%3Cstop offset='1' stop-color='%2327ae60'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='16' cy='16' r='9' stroke='%23fff' stroke-width='2.2' fill='none'/%3E%3Cpath d='M16 7v9l5 5' stroke='%23fff' stroke-width='2.2' stroke-linecap='round' fill='none'/%3E%3C/svg%3E">
+<style>
+:root{--gr:#1a6b3c;--gr2:#27ae60;--bg:#eef1f7;--card:#fff;--text:#0d2137;--muted:#8492a6;--border:#e8ecf1}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+/* ── Header ── */
+header{background:linear-gradient(135deg,#0d2137 0%,#1a3a5c 60%,#0a4a2a 100%);
+padding:0 28px;height:64px;display:flex;align-items:center;justify-content:space-between;
+box-shadow:0 2px 16px rgba(0,0,0,.25);position:sticky;top:0;z-index:10}
+.logo{display:flex;align-items:center;gap:12px}
+.logo-box{width:38px;height:38px;background:linear-gradient(135deg,var(--gr),var(--gr2));
+border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo-box svg{width:20px;height:20px;fill:none;stroke:#fff;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.logo-text{color:#fff;font-size:17px;font-weight:700;letter-spacing:.2px}
+.logo-sub{font-size:11px;color:rgba(255,255,255,.45);display:block;font-weight:400}
+.header-right{display:flex;align-items:center;gap:12px}
+.logout{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);
+color:rgba(255,255,255,.75);padding:7px 16px;border-radius:8px;cursor:pointer;
+font-size:13px;font-weight:500;transition:all .2s;text-decoration:none}
+.logout:hover{background:rgba(255,255,255,.14);color:#fff}
+
+/* ── Layout ── */
+main{max-width:960px;margin:28px auto;padding:0 20px}
+
+/* ── Stats ── */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:22px}
+.stat{background:var(--card);border-radius:14px;padding:18px 22px;
+box-shadow:0 2px 8px rgba(0,0,0,.05);border:1px solid var(--border)}
+.stat-val{font-size:30px;font-weight:700;color:var(--text)}
+.stat-label{font-size:12px;color:var(--muted);margin-top:3px;font-weight:500}
+
+/* ── Section ── */
+.section{background:var(--card);border-radius:16px;box-shadow:0 2px 12px rgba(0,0,0,.06);
+border:1px solid var(--border);overflow:hidden}
+.section-head{padding:18px 24px;display:flex;align-items:center;justify-content:space-between;
+border-bottom:1px solid var(--border)}
+.section-title{font-size:16px;font-weight:700;color:var(--text)}
+.btn-new{display:flex;align-items:center;gap:7px;background:linear-gradient(135deg,var(--gr),var(--gr2));
+color:#fff;border:none;padding:9px 18px;border-radius:10px;font-size:14px;font-weight:600;
+cursor:pointer;transition:opacity .2s}
+.btn-new:hover{opacity:.87}
+.btn-new svg{width:14px;height:14px;fill:none;stroke:#fff;stroke-width:3;stroke-linecap:round}
+
+/* ── Client list ── */
+#client-list{list-style:none}
+.ci{display:flex;align-items:center;gap:14px;padding:15px 24px;
+border-bottom:1px solid var(--border);transition:background .15s}
+.ci:last-child{border-bottom:none}
+.ci:hover{background:#fafbfc}
+
+/* Avatar */
+.av{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#d5f5e3,#a9dfbf);
+display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.av svg{width:20px;height:20px}
+
+/* Info */
+.ci-info{flex:1;min-width:0}
+.ci-name{font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ci-meta{font-size:12px;color:var(--muted);margin-top:2px}
+
+/* Badge */
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;
+padding:3px 8px;border-radius:20px;background:#d5f5e3;color:#1a6b3c}
+.badge::before{content:'';width:6px;height:6px;border-radius:50%;background:#27ae60;display:inline-block}
+
+/* Action buttons */
+.acts{display:flex;gap:6px;flex-shrink:0}
+.ab{width:35px;height:35px;border-radius:9px;border:1px solid var(--border);
+background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;
+transition:background .15s,border-color .15s}
+.ab:hover{background:#f5f7fa;border-color:#d1d7e0}
+.ab svg{width:16px;height:16px;fill:none;stroke:#636e72;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ab.danger:hover{background:#fef2f2;border-color:#fecaca}
+.ab.danger:hover svg{stroke:#e74c3c}
+
+/* Empty */
+.empty{padding:60px 24px;text-align:center;color:var(--muted)}
+.empty svg{width:52px;height:52px;fill:none;stroke:var(--muted);opacity:.35;
+stroke-width:1.5;stroke-linecap:round;margin-bottom:12px}
+.empty p{font-size:14px}
+
+/* ── Overlay / Modal ── */
+.overlay{position:fixed;inset:0;background:rgba(13,33,55,.5);backdrop-filter:blur(5px);
+display:flex;align-items:center;justify-content:center;z-index:50;
+opacity:0;pointer-events:none;transition:opacity .2s}
+.overlay.show{opacity:1;pointer-events:all}
+.modal{background:#fff;border-radius:18px;padding:34px;width:100%;max-width:390px;
+box-shadow:0 24px 64px rgba(0,0,0,.22);transform:translateY(16px) scale(.97);transition:transform .22s}
+.overlay.show .modal{transform:none}
+.modal h3{font-size:18px;font-weight:700;margin-bottom:22px;color:var(--text)}
+.modal label{display:block;font-size:13px;color:#555;margin-bottom:6px;font-weight:500}
+.modal input[type=text]{width:100%;padding:11px 14px;border:1.5px solid #e0e0e0;border-radius:10px;
+font-size:15px;outline:none;transition:border-color .2s}
+.modal input:focus{border-color:var(--gr2)}
+.modal small{display:block;margin-top:6px;font-size:11px;color:var(--muted)}
+.mbts{display:flex;gap:10px;margin-top:22px}
+.mbts button{flex:1;padding:11px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;border:none}
+.btn-cancel{background:#f0f2f5;color:#555}
+.btn-cancel:hover{background:#e5e8ee}
+.btn-ok{background:linear-gradient(135deg,var(--gr),var(--gr2));color:#fff}
+.btn-ok:hover{opacity:.88}
+
+/* ── Footer ── */
+footer{margin-top:32px;padding:20px;text-align:center}
+.tg-btn{display:inline-flex;align-items:center;gap:9px;
+background:linear-gradient(135deg,#229ED9,#1a8bbf);
+color:#fff;text-decoration:none;padding:11px 24px;
+border-radius:12px;font-size:14px;font-weight:600;
+box-shadow:0 4px 14px rgba(34,158,217,.35);
+transition:opacity .2s,transform .2s}
+.tg-btn:hover{opacity:.88;transform:translateY(-1px)}
+.tg-btn svg{width:18px;height:18px;fill:#fff;flex-shrink:0}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">
+    <div class="logo-box">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+    </div>
+    <div>
+      <div class="logo-text">Vol OVPN Panel</div>
+      <span class="logo-sub">OpenVPN Management</span>
+    </div>
+  </div>
+  <div class="header-right">
+    <a class="logout" href="/logout">Выйти ↗</a>
+  </div>
+</header>
+
+<main>
+  <div class="stats">
+    <div class="stat"><div class="stat-val" id="s-total">—</div><div class="stat-label">Всего клиентов</div></div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <span class="section-title">Клиенты OpenVPN</span>
+      <button class="btn-new" onclick="openAdd()">
+        <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Новый клиент
+      </button>
+    </div>
+    <ul id="client-list"></ul>
+  </div>
+</main>
+
+<footer>
+  <a class="tg-btn" href="https://t.me/vollaf1" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+    Поддержка
+  </a>
+</footer>
+
+<!-- Add modal -->
+<div class="overlay" id="m-add">
+  <div class="modal">
+    <h3>Добавить клиента</h3>
+    <label>Название устройства</label>
+    <input type="text" id="cname" placeholder="phone, laptop, office..." maxlength="64">
+    <small>Только латинские буквы, цифры, _ и -</small>
+    <div class="mbts">
+      <button class="btn-cancel" onclick="closeModal('m-add')">Отмена</button>
+      <button class="btn-ok" id="btn-create" onclick="createClient()">Создать</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function closeModal(id){ document.getElementById(id).classList.remove('show'); }
+function openAdd(){ document.getElementById('m-add').classList.add('show'); setTimeout(()=>document.getElementById('cname').focus(),80); }
+
+document.querySelectorAll('.overlay').forEach(el => el.addEventListener('click', e=>{ if(e.target===el) el.classList.remove('show'); }));
+document.getElementById('cname').addEventListener('keydown', e=>{ if(e.key==='Enter') createClient(); });
+
+function timeAgo(ts){
+  if(!ts) return '';
+  const d = Math.floor((Date.now()-new Date(ts))/1000);
+  if(d<60) return 'только что';
+  if(d<3600) return Math.floor(d/60)+' мин назад';
+  if(d<86400) return Math.floor(d/3600)+' ч назад';
+  return Math.floor(d/86400)+' д назад';
+}
+
+async function load(){
+  try{
+    const r = await fetch('/api/clients');
+    const clients = await r.json();
+    if(!Array.isArray(clients)) return;
+    document.getElementById('s-total').textContent = clients.length;
+    const ul = document.getElementById('client-list');
+    if(!clients.length){
+      ul.innerHTML = '<li class="empty"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="5"/><path d="M3 21v-2a9 9 0 0 1 18 0v2"/></svg><p>Нет клиентов. Создайте первого!</p></li>';
+      return;
+    }
+    ul.innerHTML = clients.map(c=>`<li class="ci">
+      <div class="av">
+        <svg viewBox="0 0 24 24" fill="#1a6b3c"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4S7.2 4.5 7.2 7.2S9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+      </div>
+      <div class="ci-info">
+        <div class="ci-name">${esc(c.name)}</div>
+        <div class="ci-meta">${c.createdAt ? 'Создан '+timeAgo(c.createdAt) : ''} &nbsp;<span class="badge">Активен</span></div>
+      </div>
+      <div class="acts">
+        <button class="ab" title="Скачать конфиг (.ovpn)" onclick="dlConfig('${esc(c.name)}')">
+          <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </button>
+        <button class="ab danger" title="Удалить / отозвать" onclick="del('${esc(c.name)}')">
+          <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+        </button>
+      </div>
+    </li>`).join('');
+  } catch(e){ console.error(e); }
+}
+
+async function createClient(){
+  const name = document.getElementById('cname').value.trim();
+  if(!name) return;
+  if(!/^[a-zA-Z0-9_-]{1,64}$/.test(name)){
+    alert('Только латинские буквы, цифры, _ и -');
+    return;
+  }
+  const btn = document.getElementById('btn-create');
+  btn.textContent = 'Создание...'; btn.disabled = true;
+  try {
+    const r = await fetch('/api/clients',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name})});
+    const d = await r.json();
+    if(d.error){ alert('Ошибка: '+d.error); return; }
+    document.getElementById('cname').value='';
+    closeModal('m-add');
+    load();
+  } finally {
+    btn.textContent='Создать'; btn.disabled=false;
+  }
+}
+
+function dlConfig(name){
+  const a = document.createElement('a');
+  a.href = '/api/clients/'+encodeURIComponent(name)+'/config';
+  a.download = name+'.ovpn';
+  a.click();
+}
+
+async function del(name){
+  if(!confirm('Удалить клиента "'+name+'"?\nКонфиг будет отозван.')) return;
+  const r = await fetch('/api/clients/'+encodeURIComponent(name),{method:'DELETE'});
+  const d = await r.json();
+  if(d.error){ alert('Ошибка: '+d.error); return; }
+  load();
+}
+
+load();
+setInterval(load, 15000);
+</script>
+</body>
+</html>
